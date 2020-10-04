@@ -7,7 +7,7 @@ import {
   CardBody,
   CardTitle,
 } from "reactstrap";
-import DishDetail from "./dishDetailComponent";
+import DishDetail from "./DishdetailComponent";
 
 class Menu extends Component {
   constructor(props) {
