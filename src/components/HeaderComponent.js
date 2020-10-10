@@ -21,7 +21,7 @@ class Header extends Component {
     render() {
         return (
             // this is a react fragment, doesn't add a node in the virtual DOM unlike a div
-            <>
+            <React.Fragment>
                 <Navbar dark expand="md">
                     <div className="container">
 
@@ -29,8 +29,8 @@ class Header extends Component {
 
                         <NavbarBrand className="mr-auto" href="/">
                             <img src="assets/images/logo.png" height="30" width="41" alt="Restaurant Con Fusion" />
-
                         </NavbarBrand>
+
                         <Collapse isOpen={this.state.isNavOpen} navbar>
                             <Nav navbar>
                                 <NavItem>
@@ -67,7 +67,7 @@ class Header extends Component {
                         </div>
                     </div>
                 </Jumbotron>
-            </>
+            </React.Fragment>
         )
 
     }
