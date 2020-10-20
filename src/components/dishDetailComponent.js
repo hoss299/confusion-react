@@ -14,12 +14,19 @@ class CommentForm extends Component {
       isCommentModalOpen: false,
     };
     this.toggleCommentModal = this.toggleCommentModal.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+
   }
 
   toggleCommentModal() {
     this.setState({
         isCommentModalOpen: !this.state.isCommentModalOpen,       
     });
+  }
+
+  handleSubmit(values) {
+    this.toggleCommentModal();
+    this.props.addComment(this.props.dishId, values.rating, values.author, values.newComment);
   }
 
   render() {
@@ -33,7 +40,7 @@ class CommentForm extends Component {
           <Modal isOpen={this.state.isCommentModalOpen} toggle={this.toggleCommentModal}>
             <ModalHeader toggle={this.toggleCommentModal}>Submit Comment</ModalHeader>
             <ModalBody>
-              <LocalForm className="m-3">
+              <LocalForm className="m-3" onSubmit={(values) => this.handleSubmit(values)}>
                 <Row className="form-group" >
                   <Label htmlFor="rating" >Rating</Label>
                     <Control.select className="form-control" id="rating" name="rating" model=".rating" placeholder="1">
@@ -91,7 +98,7 @@ function RenderDish({ dish }) {
   }
 }
 
-function RenderComments({ comments , dish }) {
+function RenderComments({ comments , dish , addComment, dishId}) {
   if (comments != null) {
     return (
       <>
@@ -107,7 +114,7 @@ function RenderComments({ comments , dish }) {
             )
           })}
         </ul>
-        <CommentForm />
+        <CommentForm dishId={dishId} addComment={addComment} />
       </>
     )
   } else {
@@ -135,7 +142,7 @@ function DishDetail(props) {
             <RenderDish dish={props.dish} />
           </div>
           <div className="col-12 col-md-5 m-1">
-            <RenderComments comments={props.comments} dish={props.dish} />
+            <RenderComments comments={props.comments} dish={props.dish} addComment={props.addComment} dishId={props.dish.id} />
           </div>
         </div>
       </div>
