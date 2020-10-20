@@ -1,7 +1,79 @@
-import React from "react";
-import { Card, CardImg, CardText, CardBody, CardTitle, Breadcrumb, BreadcrumbItem } from "reactstrap";
+import React, {Component} from "react";
+import { Card, CardImg, CardText, CardBody, CardTitle, Breadcrumb, BreadcrumbItem, Button, Label, Col, Row, Modal, ModalHeader, ModalBody} from "reactstrap";
 import { Link } from 'react-router-dom';
+import { Control, LocalForm, Errors } from 'react-redux-form';
 
+const required = (val) => val && val.length;
+const maxLength = (len) => (val) => !(val) || (val.length <= len);
+const minLength = (len) => (val) => !(val) || (val.length >= len);
+
+class CommentForm extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isCommentModalOpen: false,
+    };
+    this.toggleCommentModal = this.toggleCommentModal.bind(this);
+  }
+
+  toggleCommentModal() {
+    this.setState({
+        isCommentModalOpen: !this.state.isCommentModalOpen,       
+    });
+  }
+
+  render() {
+    
+      return(
+        <React.Fragment>
+          <Button outline onClick={this.toggleCommentModal}>
+            <span className="fa fa-pencil fa-lg"></span> Submit Comment
+          </Button>
+  
+          <Modal isOpen={this.state.isCommentModalOpen} toggle={this.toggleCommentModal}>
+            <ModalHeader toggle={this.toggleCommentModal}>Submit Comment</ModalHeader>
+            <ModalBody>
+              <LocalForm className="m-3">
+                <Row className="form-group" >
+                  <Label htmlFor="rating" >Rating</Label>
+                    <Control.select className="form-control" id="rating" name="rating" model=".rating" placeholder="1">
+                      <option>1</option>
+                      <option>2</option>
+                      <option>3</option>
+                      <option>4</option>
+                      <option>5</option>
+                    </Control.select>                           
+                </Row>
+                <Row className="form-group">
+                  <Label htmlFor="author">Your Name</Label>
+                  <Control.text className="form-control" id="author" name="author" placeholder="Your Name" model=".author" validators={{required,  minLength:minLength(3), maxLength:maxLength(15)}}/> 
+                  <Errors
+                    className="text-danger"
+                    model=".author"
+                    show="touched"
+                    messages={{
+                      required: "Required",
+                      minLength: 'Must be greater than 2 characters',
+                      maxLength: 'Must be 15 characters or less'
+                    }}
+                  />          
+                </Row>
+                <Row className="form-group">
+                  <Label htmlFor="newComment">Comment</Label>
+                  <Control.textarea className="form-control" id="newComment" name="newComment" rows="8" model=".newComment"/>           
+                </Row>
+                <Row className="form-group">
+                  <Button type="submit" color="primary" >Submit</Button>           
+                </Row>
+              </LocalForm>
+            </ModalBody>
+          </Modal>
+        </React.Fragment>      
+      )
+    
+  }
+    
+}
 
 function RenderDish({ dish }) {
   if (dish != null) {
@@ -19,10 +91,10 @@ function RenderDish({ dish }) {
   }
 }
 
-function RenderComments({ comments }) {
+function RenderComments({ comments , dish }) {
   if (comments != null) {
     return (
-      <div >
+      <>
         <h4>Comments</h4>
         <ul className="list-unstyled">
           {comments.map((comment) => {
@@ -35,7 +107,8 @@ function RenderComments({ comments }) {
             )
           })}
         </ul>
-      </div>
+        <CommentForm />
+      </>
     )
   } else {
     return <div>am</div>;
@@ -62,7 +135,7 @@ function DishDetail(props) {
             <RenderDish dish={props.dish} />
           </div>
           <div className="col-12 col-md-5 m-1">
-            <RenderComments comments={props.comments} />
+            <RenderComments comments={props.comments} dish={props.dish} />
           </div>
         </div>
       </div>
